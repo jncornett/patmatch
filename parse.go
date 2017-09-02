@@ -76,7 +76,7 @@ const (
 )
 
 var (
-	patExpr = regexp.MustCompile(`%\((\w*)\)(\w)|%([%\w])|([^%\s]+?)|(\s+)`)
+	patExpr = regexp.MustCompile(`%\(([\w_-]*)\)(\w)|%([%\w])|([^%\s]+?)|(\s+)`)
 	// Currently, only '%s' is supported, but we may support more verbs in the future ('%d' for numbers, for example).
 	verbMap = map[string]string{
 		"s": `.+`,
