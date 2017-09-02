@@ -1,7 +1,6 @@
 package patmatch
 
 import (
-	"fmt"
 	"regexp"
 	"strings"
 )
@@ -27,7 +26,7 @@ func (b *regexpBuilder) addExpr(expr string) {
 }
 
 func (b *regexpBuilder) addCapture(expr string) {
-	b.parts = append(b.parts, fmt.Sprintf(`(%s)`, expr))
+	b.parts = append(b.parts, `(`+expr+`)`)
 }
 
 func (b *regexpBuilder) addExact(s string) {

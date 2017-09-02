@@ -1,7 +1,7 @@
 package patmatch
 
 import (
-	"fmt"
+	"errors"
 	"regexp"
 )
 
@@ -33,7 +33,7 @@ func ParseFlags(expr string, flags ParseFlag) (*Template, error) {
 			// named group (gets captured)
 			verb, exists := verbMap[group[patNamedVerb]]
 			if !exists {
-				return nil, fmt.Errorf("unrecognized verb in group %q: %q", group[patName], group[patNamedVerb])
+				return nil, errors.New("unrecognized verb in group " + group[patName] + ": " + group[patNamedVerb])
 			}
 			builder.addCapture(verb)
 			names = append(names, group[patName])
@@ -44,7 +44,7 @@ func ParseFlags(expr string, flags ParseFlag) (*Template, error) {
 			// anonymous group (no capture)
 			verb, exists := verbMap[group[patVerb]]
 			if !exists {
-				return nil, fmt.Errorf("unrecognized verb: %q", group[patVerb])
+				return nil, errors.New("unrecognized verb: " + group[patVerb])
 			}
 			builder.addExpr(verb)
 		} else if group[patString] != "" {
@@ -71,6 +71,7 @@ const (
 
 var (
 	patExpr = regexp.MustCompile(`%\((\w+)\)(\w)|%([%\w])|([^%\s]+?)|(\s+)`)
+	// Currently, only '%s' is supported, but we may support more verbs in the future ('%d' for numbers, for example).
 	verbMap = map[string]string{
 		"s": `.+`,
 	}
