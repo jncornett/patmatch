@@ -14,47 +14,52 @@ func TestParse(t *testing.T) {
 		{
 			in:    "",
 			re:    "",
-			names: "",
+			names: "0",
 		},
 		{
 			in:    "fixed",
 			re:    "fixed",
-			names: "",
+			names: "0",
 		},
 		{
 			in:    "%s",
 			re:    `.+`,
-			names: "",
+			names: "0",
 		},
 		{
 			in:    "%%",
 			re:    `%`,
-			names: "",
+			names: "0",
 		},
 		{
 			in:    "%(named)s",
 			re:    `(.+)`,
-			names: ",named",
+			names: "0,named",
 		},
 		{
 			in:    "   ",
 			re:    `\s+`,
-			names: "",
+			names: "0",
 		},
 		{
 			in:    "twas %(time)s, and",
 			re:    `twas\s+(.+),\s+and`,
-			names: ",time",
+			names: "0,time",
 		},
 		{
 			in:    "%(foo)s and %(bar)s",
 			re:    `(.+)\s+and\s+(.+)`,
-			names: ",foo,bar",
+			names: "0,foo,bar",
 		},
 		{
 			in:    "%s and %s",
 			re:    `.+\s+and\s+.+`,
-			names: "",
+			names: "0",
+		},
+		{
+			in:    "%()s and %()s",
+			re:    `(.+)\s+and\s+(.+)`,
+			names: "0,1,2",
 		},
 	}
 

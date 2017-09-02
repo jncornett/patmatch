@@ -11,7 +11,7 @@ func TestTemplate_Apply(t *testing.T) {
 	if len(matches) != 3 {
 		t.Fatalf("matches: want %d entries, got %d", 3, len(matches))
 	}
-	if matches[""] != "buzz and bat" {
+	if matches["0"] != "buzz and bat" {
 		t.Errorf("full text match: want %q, got %q", "buzz and bat", matches[""])
 	}
 	if matches["foo"] != "buzz" {

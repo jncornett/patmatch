@@ -3,6 +3,7 @@ package patmatch
 import (
 	"errors"
 	"regexp"
+	"strconv"
 )
 
 // ParseFlag represents a boolean flag that can be passed int ParseFlag.
@@ -27,16 +28,21 @@ func Parse(expr string) (*Template, error) {
 // passing any any optional flags.
 func ParseFlags(expr string, flags ParseFlag) (*Template, error) {
 	builder := newRegexpBuilder(flags&FlagWholeString != 0, flags&FlagIgnoreCase != 0)
-	names := []string{""}
+	names := []string{"0"}
 	for _, group := range patExpr.FindAllStringSubmatch(expr, -1) {
-		if group[patName] != "" {
-			// named group (gets captured)
-			verb, exists := verbMap[group[patNamedVerb]]
-			if !exists {
-				return nil, errors.New("unrecognized verb in group " + group[patName] + ": " + group[patNamedVerb])
+		if group[patNamedVerb] != "" {
+			// capture group
+			name := group[patName]
+			verb := group[patNamedVerb]
+			if name == "" {
+				name = strconv.Itoa(len(names))
 			}
-			builder.addCapture(verb)
-			names = append(names, group[patName])
+			verbExpr, exists := verbMap[verb]
+			if !exists {
+				return nil, errors.New("unrecognized verb in group " + name + ": " + verb)
+			}
+			builder.addCapture(verbExpr)
+			names = append(names, name)
 		} else if group[patVerb] == "%" {
 			// escape sequence for '%'
 			builder.addExact("%")
@@ -70,7 +76,7 @@ const (
 )
 
 var (
-	patExpr = regexp.MustCompile(`%\((\w+)\)(\w)|%([%\w])|([^%\s]+?)|(\s+)`)
+	patExpr = regexp.MustCompile(`%\((\w*)\)(\w)|%([%\w])|([^%\s]+?)|(\s+)`)
 	// Currently, only '%s' is supported, but we may support more verbs in the future ('%d' for numbers, for example).
 	verbMap = map[string]string{
 		"s": `.+`,
